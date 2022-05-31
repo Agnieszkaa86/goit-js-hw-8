@@ -1,50 +1,66 @@
 import throttle from 'lodash.throttle';
 
-const save = (key, value) => {
-  try {
-    const serializedState = JSON.stringify(value);
-    localStorage.setItem(key, serializedState);
-  } catch (error) {
-    console.error('Set state error: ', error.message);
-  }
-};
-
-const load = key => {
-  try {
-    const serializedState = localStorage.getItem(key);
-    return serializedState === null ? undefined : JSON.parse(serializedState);
-  } catch (error) {
-    console.error('Get state error: ', error.message);
-  }
-};
-
+const key = 'feedback-form-state';
 const form = document.querySelector('.feedback-form');
 updateOutput();
-form.addEventListener('input', throttle(saveRecord, 500))
+form.addEventListener('input', throttle(saveRecords, 500));
 
+const email = document.querySelector('[name="email"]');
+const message = document.querySelector('[name="message"]');
 
-function saveRecord(ent) {
-    const record = {
-        email: form.elements.email.value,
-        message: form.elements.message.value,
+function saveRecords(evt) {
+  const record = {
+    email: email.value,
+    message: message.value,
+  };
+  localStorage.setItem(key, JSON.stringify (record));
+  updateOutput();
+  form.reset();
+}
+
+function updateOutput() {
+  if (JSON.parse(localStorage.getItem(key) === null)) {
+    return;
+  } else {
+    record.email = JSON.parse(localStorage.getItem(key)).email || "";
+    record.message = Json.parse(localStorage.getItem(key)).message || "";
+  }
+}
+updateOutput();
+form.addEventListener('submit', handleSubmit);
+
+function handleSubmit(event) {
+  event.preventDefault();
+  console.log(load(key));
+  localStorage.removeItem('key');
+  form.reset();
+}
+/*function saveRecords () {
+    const records = {
+        email: email.value,
+        message: message.value,
     };
 
-    save('feedback-form-state', record);
+     localStorage.setItem('feedback-form-state', JSON.stringify(records))
   
 }
-function updateOutput() {
-    if(localStorage.getItem('feedback-form-state') === null){
+function getRecords() {
+  let object = JSON.parse(localStorage.getItem('feedback-form-state'));
+    if (object === null){
         return;
     } else {
-        form.elements.email.value = localStorage.getItem('feedback-form-state').email || '';
-        form.elements.message.value = localStorage.getItem('feedback-form-state').message || '';
+      email.value = object.email;
+      message.value = object.message; 
     }
 }
+getRecords();
 
 form.addEventListener('submit', submitForm);
-function submitForm(event) {
-    event.preventDefault();
+
+function submitForm(evt) {
+    evt.preventDefault();
     form.reset();
-    console.log(load('feedback-form-state'));
+    console.log(localStorage.getItem('feedback-form-state'));
      localStorage.removeItem('feedback-form-state');
 }
+*/
