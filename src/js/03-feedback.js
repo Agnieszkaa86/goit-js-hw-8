@@ -33,6 +33,6 @@ form.addEventListener('submit', handleSubmit);
 function handleSubmit(event) {
   event.preventDefault();
   console.log(localStorage.getItem(key));
-  localStorage.removeItem('key');
+  localStorage.removeItem(key);
   form.reset();
 }
